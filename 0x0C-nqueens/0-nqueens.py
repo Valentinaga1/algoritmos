@@ -1,71 +1,78 @@
 #!/usr/bin/python3
 """ Function to check is safe to place a queen
 """
+import sys
 
 
-def isSafe(mat, r, c):
-    for i in range(r):
-        if mat[i][c] == 'Q':
+def printB(brd):
+    """
+    print board
+    """
+    r = []
+    for x in brd:
+        for c in x:
+            if c == 1:
+                r.append([brd.index(x), x.index(c)])
+    print(r)
+
+
+def is_safe(brd, row, col, n):
+    """
+    is_safe
+    """
+    for i in range(col):
+
+        if brd[row][i] + brd[row][i + 1] != 0:
             return False
 
-    (i, j) = (r, c)
-    while i >= 0 and j >= 0:
-        if mat[i][j] == 'Q':
+    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+        if brd[i][j] == 1:
             return False
-        i = i - 1
-        j = j - 1
 
-    (i, j) = (r, c)
-    while i >= 0 and j < N:
-        if mat[i][j] == 'Q':
+    for i, j in zip(range(row, n, 1), range(col, -1, -1)):
+        if brd[i][j] == 1:
             return False
-        i = i - 1
-        j = j + 1
 
     return True
 
 
-def printSolution(mat):
-    print([[i, j] for i in range(len(mat))
-          for j in range(len(mat)) if mat[i][j] == 'Q'])
+def nqueen(brd, col, n):
+    """
+    nqueen
+    """
+
+    if (col >= n):
+        printB(brd)
+
+    for x in range(n):
+        if is_safe(brd, x, col, n):
+            brd[x][col] = 1
+            if nqueen(brd, col+1, n):
+                return True
+            brd[x][col] = 0
+
+    return False
 
 
-def nQueen(mat, r):
-
-    if r == N:
-        printSolution(mat)
-        return
-
-    for i in range(N):
-        if isSafe(mat, r, i):
-            mat[r][i] = 'Q'
-            nQueen(mat, r + 1)
-            mat[r][i] = '–'
+# initial run starting from the col 0!
+def main():
+    """
+    Main
+    """
+    if len(sys.argv) != 2:
+        print("Usage: nqueens N")
+        exit(1)
+    if sys.argv[1].isnumeric():
+        n = int(sys.argv[1])
+    else:
+        print("N must be a number")
+        exit(1)
+    if n < 4:
+        print("N must be at least 4")
+        exit(1)
+    brd = [[0 for x in range(n)] for y in range(n)]
+    nqueen(brd, 0, n)
 
 
 if __name__ == '__main__':
-    """N queens challenge
-    Place N queen Non-attacking each other
-    """
-    import sys
-
-    if len(sys.argv) != 2:
-        print('Usage: nqueens N')
-        exit(1)
-
-    try:
-        args = int(sys.argv[1])
-    except Exception:
-        args = sys.argv[1]
-
-    if not isinstance(args, int):
-        print('N must be a number')
-        exit(1)
-
-    if args < 4:
-        print('N must be at least 4')
-        exit(1)
-
-    N = args
-    mat = [['–' for x in range(N)] for y in range(N)]
-    nQueen(mat, 0)
+    main()
