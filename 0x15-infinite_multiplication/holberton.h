@@ -1,15 +1,14 @@
-#ifndef MUL_H
-#define MUL_H
+#ifndef HOLBERTON_H
+#define HOLBERTON_H
 
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-int _putchar(char c);
-void Error_message(void);
-int _isdigit(char c);
-int _strlen(char *s);
-int *multiply(char *num1, char *num2);
-int *vector(int len);
-void reverse_array(int *a, int n);
+#include <unistd.h>
 
-#endif /* Big Multiplication */
+int main(int argc, char *argv[]);
+int _putchar(char c);
+int _strlen(char *);
+int is_digit(char *c);
+void multiply(char *s1, char *s2);
+
+#endif /* HOLBERTON_H */
