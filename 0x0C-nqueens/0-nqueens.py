@@ -1,78 +1,70 @@
 #!/usr/bin/python3
-""" Function to check is safe to place a queen
 """
-import sys
+Module for 0x0C. N Queens.
+Holberton School
+Specializations - Interview Preparation ― Algorithms
+"""
+from sys import argv, exit
 
 
-def printB(brd):
-    """
-    print board
-    """
-    r = []
-    for x in brd:
-        for c in x:
-            if c == 1:
-                r.append([brd.index(x), x.index(c)])
-    print(r)
+def solveNQueens(n):
+    """Program that solves the N queens problem"""
+    res = []
+    queens = [-1] * n
+    # queens is a one-dimension array, like [1, 3, 0, 2] means
+    # index represents row no and value represents col no
+
+    def dfs(index):
+        """Recursively resolves the N queens problem"""
+        if index == len(queens):  # n queens have been placed correctly
+            res.append(queens[:])
+            return  # backtracking
+        for i in range(len(queens)):
+            queens[index] = i
+            if valid(index):  # pruning
+                dfs(index + 1)
+
+    # check whether nth queens can be placed
+    def valid(n):
+        """Method that checks if a position in the board is valid"""
+        for i in range(n):
+            if abs(queens[i] - queens[n]) == n - i:  # same diagonal
+                return False
+            if queens[i] == queens[n]:  # same column
+                return False
+        return True
+
+    # given queens = [1,3,0,2] this function returns
+    # [[0, 1], [1, 3], [2, 0], [3, 2]]
+
+    def make_all_boards(res):
+        """Method that builts the List that be returned"""
+        actual_boards = []
+        for queens in res:
+            board = []
+            for row, col in enumerate(queens):
+                board.append([row, col])
+            actual_boards.append(board)
+        return actual_boards
+
+    dfs(0)
+    return make_all_boards(res)
 
 
-def is_safe(brd, row, col, n):
-    """
-    is_safe
-    """
-    for i in range(col):
-
-        if brd[row][i] + brd[row][i + 1] != 0:
-            return False
-
-    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
-        if brd[i][j] == 1:
-            return False
-
-    for i, j in zip(range(row, n, 1), range(col, -1, -1)):
-        if brd[i][j] == 1:
-            return False
-
-    return True
-
-
-def nqueen(brd, col, n):
-    """
-    nqueen
-    """
-
-    if (col >= n):
-        printB(brd)
-
-    for x in range(n):
-        if is_safe(brd, x, col, n):
-            brd[x][col] = 1
-            if nqueen(brd, col+1, n):
-                return True
-            brd[x][col] = 0
-
-    return False
-
-
-# initial run starting from the col 0!
-def main():
-    """
-    Main
-    """
-    if len(sys.argv) != 2:
-        print("Usage: nqueens N")
+if __name__ == "__main__":
+    if len(argv) < 2:
+        print('Usage: nqueens N')
         exit(1)
-    if sys.argv[1].isnumeric():
-        n = int(sys.argv[1])
-    else:
-        print("N must be a number")
+    try:
+        n = int(argv[1])
+    except ValueError:
+        print('N must be a number')
         exit(1)
+
     if n < 4:
-        print("N must be at least 4")
+        print('N must be at least 4')
         exit(1)
-    brd = [[0 for x in range(n)] for y in range(n)]
-    nqueen(brd, 0, n)
-
-
-if __name__ == '__main__':
-    main()
+    else:
+        result = solveNQueens(n)
+        for row in result:
+            print(row)
